@@ -14,7 +14,7 @@ RUN set -x &&\
         python-smbus -y
 RUN set -x &&\
     pip install twisted tornado pigpio pyopenssl autobahn image \ 
-        bson pymongo service_identity
+        bson pymongo service_identity pandas
 RUN set -x catkin_make
 RUN set -x catkin_make install
 ENV PYTHONPATH=${PYTHONPATH}:/root/catkin_ws/src/arc2020/scripts

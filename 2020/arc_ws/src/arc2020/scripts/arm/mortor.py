@@ -274,24 +274,24 @@ class StepMortorClass(object):
                 )
             ):
                 if stepping > self.stepcnt:
-                    self.pic.write(self.port_a, pigpio.HIGH)
-                    time.sleep(wait_hl/2)
                     self.pic.write(self.port_b, pigpio.HIGH)
                     time.sleep(wait_hl/2)
-                    self.pic.write(self.port_a, pigpio.LOW)
-                    time.sleep(wait_lh/2)
+                    self.pic.write(self.port_a, pigpio.HIGH)
+                    time.sleep(wait_hl/2)
                     self.pic.write(self.port_b, pigpio.LOW)
+                    time.sleep(wait_lh/2)
+                    self.pic.write(self.port_a, pigpio.LOW)
                     time.sleep(wait_lh/2)
                     self.stepcnt += 1
 
                 elif stepping < self.stepcnt:
-                    self.pic.write(self.port_b, pigpio.HIGH)
-                    time.sleep(wait_hl/2)
                     self.pic.write(self.port_a, pigpio.HIGH)
                     time.sleep(wait_hl/2)
-                    self.pic.write(self.port_b, pigpio.LOW)
-                    time.sleep(wait_lh/2)
+                    self.pic.write(self.port_b, pigpio.HIGH)
+                    time.sleep(wait_hl/2)
                     self.pic.write(self.port_a, pigpio.LOW)
+                    time.sleep(wait_lh/2)
+                    self.pic.write(self.port_b, pigpio.LOW)
                     time.sleep(wait_lh/2)
                     self.stepcnt -= 1
             elif not(self.is_notdebug):

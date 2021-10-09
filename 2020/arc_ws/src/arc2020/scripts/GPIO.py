@@ -23,11 +23,12 @@ class GPIOPIN(IntEnum):
     RESERVED8       = 25
     STEP_MOTOR_A1   = 11
     STEP_MOTOR_B1   = 8
-    SHUT_DOWN_DONE  = 7
+    #SHUT_DOWN_DONE  = 7
+    SONAR_PULS2     = 7
     GYRO_LINE1      = 0
     GYRO_LINE2      = 1
     #SONAR_PULS      = 5
-    SONAR_PULS      = 12
+    SONAR_PULS1     = 12
     SONAR_TRIG1     = 6
     #SONAR_TRIG2     = 12
     SONAR_TRIG2     = 5

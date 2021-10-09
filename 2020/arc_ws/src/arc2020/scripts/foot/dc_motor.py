@@ -28,7 +28,7 @@ class DCMotor(object):
 
     def changeDuty(self,inDuty):
         self.duty = inDuty + CENTER
-        print("changeduty;" + str(self.duty))
+        #print("changeduty;" + str(self.duty))
         if __pigpio__:
             if inDuty > 0:  #正転
                 self.duty = inDuty + CENTER
@@ -50,7 +50,7 @@ class DCMotor(object):
                 #self.pi.set_PWM_dutycycle(self.PINS[1], 0) #デューティー比変更
         print("in "+str(inDuty)+" out"+str(self.duty))
         #print("pwm1 "+str(pwm1)+" pwm2 "+str(pwm2))
-        time.sleep(0.5)
+        #time.sleep(0.5)
 
 
 
