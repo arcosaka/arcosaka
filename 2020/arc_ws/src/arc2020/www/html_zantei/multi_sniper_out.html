@@ -31,9 +31,11 @@
 				window.onload = loadFinished;
 				function loadFinished(){
 					var querys = getUrlQueries();
-					document.getElementById("main").innerHTML = querys["main"];
-					document.getElementById("sub").innerHTML = querys["sub"];
-					Talker.send("","",0,querys["main"],querys["sub"],querys["l"],querys["w"],querys["h"],true);
+					var main = decodeURI(querys["main"])
+					var sub = decodeURI(querys["sub"])
+					document.getElementById("main").innerHTML = main;
+					document.getElementById("sub").innerHTML = sub;
+					Talker.send("","",0,main,sub,querys["l"],querys["w"],querys["h"],true);
 				}
 				function callback(message){
 					document.getElementById("power").value = message.webapp_batterycharge/100;
