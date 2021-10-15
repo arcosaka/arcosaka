@@ -39,8 +39,10 @@
 				var isDrawComplete = false;
 				function loadFinished(){
 					var querys = getUrlQueries();
-					document.getElementById("main").innerHTML = querys["main"];
-					document.getElementById("sub").innerHTML = querys["sub"];
+					var main = decodeURI(querys["main"])
+					var sub = decodeURI(querys["sub"])
+					document.getElementById("main").innerHTML = main;
+					document.getElementById("sub").innerHTML = sub;
 					Talker.send("","",0,"","",0,0,0,false,true);
 				}
 				function callback(message){
@@ -100,7 +102,7 @@
 
 				function toComplete(){
 					var querys = getUrlQueries();
-					window.location.href ='multi_sniper_complete.html?main=' + querys["main"] + "&sub=" + querys["sub"] + "&l=" + querys["l"]+ "&w=" + querys["w"] + "&h=" + querys["h"];
+					window.location.href ='multi_sniper_result.html?main=' + querys["main"] + "&sub=" + querys["sub"] + "&l=" + querys["l"]+ "&w=" + querys["w"] + "&h=" + querys["h"];
 				}
 			</script>			
 		    </center></p>

@@ -239,15 +239,15 @@
 					//送信トピック作成
 					this.pub_to_foot = new ROSLIB.Topic({
 						ros: this.ros,
-						name: '/arc2020_3/foot_debug',
-						messageType: 'arc2020/foot'
+						name: '/arc2020_3/footdebug',
+						messageType: 'arc2020/footdebug'
 					});
 				},
 
 				send: function () {
 					//送信メッセージを作成
 					var to_foot = new ROSLIB.Message({
-						// drill_req               :Number (drill_req_value),
+						//drill_req               :Number (drill_req_value),
 						motor_r: Number(slider_elem[0].value),
 						motor_l: Number(slider_elem[1].value)
 					});
@@ -333,12 +333,13 @@
 					var sub_to_client = new ROSLIB.Topic({
 						ros: this.ros,
 						name: '/arc2020_3/foot_sensor',
-						messageType: 'arc2020/foot'
+						messageType: 'arc2020/footdebug'
 					});
 					document.getElementById('sonar_l').innerHTML = 100;
 					sub_to_client.subscribe(function (message) {
 						document.getElementById('sonar_l').innerHTML = message.sonor[0];
 						document.getElementById('sonar_r').innerHTML = message.sonor[1];
+						document.getElementById('rot_encode').innerHTML = message.mileage;
 						for (var i = 0; i < line_id.length; i++) {
 							document.getElementById(line_id[i]).innerHTML = message.line[i];
 						}

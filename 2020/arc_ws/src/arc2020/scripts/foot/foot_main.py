@@ -80,10 +80,10 @@ class FootMain(object):
 
         # Sonor用のインスタンス作成
         self.sonor = []
-        port = (GPIOPIN.SONAR_TRIG1.value,GPIOPIN.SONAR_PULS.value)
+        port = (GPIOPIN.SONAR_TRIG1.value,GPIOPIN.SONAR_PULS1.value)
         self.sonor.append(HCSR04Class(False,port))
 
-        port = (GPIOPIN.SONAR_TRIG2.value,GPIOPIN.SONAR_PULS.value)
+        port = (GPIOPIN.SONAR_TRIG2.value,GPIOPIN.SONAR_PULS2.value)
         self.sonor.append(HCSR04Class(False,port))
         self.sonor[0].start()
         self.sonor[1].start()

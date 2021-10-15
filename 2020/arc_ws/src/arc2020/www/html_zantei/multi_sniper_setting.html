@@ -71,7 +71,9 @@
 						(heightvalue > 0) &&
 						(selectSub.selectedIndex > 0) 
 					){
-						window.location.href ='multi_sniper_out.html?main=' + mainvalue + "&sub=" + subvalue + "&l=" + lengthvalue+ "&w=" + widthvalue + "&h=" + heightvalue;
+						var main = encodeURI(mainvalue)
+						var sub = encodeURI(subvalue)
+						window.location.href ="multi_sniper_out.html?main=" + main + "&sub=" + sub+ "&l=" + lengthvalue+ "&w=" + widthvalue + "&h=" + heightvalue;
 					}
 				}
 				function addSeedList(select,list){
@@ -92,12 +94,10 @@
 				}
 
 				function callback(message){
-					if(message.webapp_subseedlist[0] == ""){
-						if(message.webapp_mainseedlist[0] != ""){
-							addSeedList(selectMain,message.webapp_mainseedlist);
-						}
+					if(message.webapp_mainseedlist[0] != ""){
+						addSeedList(selectMain,message.webapp_mainseedlist);
 					}
-					else{
+					if(message.webapp_subseedlist[0] != ""){
 						addSeedList(selectSub,message.webapp_subseedlist);
 					}
 					//window.location.href ='multi_sniper_setting.html';

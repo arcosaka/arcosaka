@@ -5,4 +5,5 @@ float32[] line
 float32[] accel
 float32[] gyro
 float32[] mag
+float32 mileage
 bool movestatus
