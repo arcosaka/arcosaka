@@ -29,9 +29,9 @@ USERNAME = "aaa"
 PASSWORD = "bbb"
 mainlist = ["ニンジン","トマト","レタス"]
 sublist = ["バジル","春菊","ほうれん草"]
-type = [0,1,0,1]
-y = [5,15,25,35]
-x = [10,20,10,20]
+type = [0,0,1,0,0]
+y = [5,5,10,15,15]
+x = [10,20,15,10,20]
 COUNT = len(x)
 
 class Main(object):
