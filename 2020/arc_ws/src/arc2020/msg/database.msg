@@ -1,5 +1,5 @@
 string[] mainseedlist
 string[] subseedlist
-string blueprint
+string[] seed_type 
 int32[] coordinates_x
 int32[] coordinates_y
