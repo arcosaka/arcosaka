@@ -29,10 +29,10 @@ USERNAME = "aaa"
 PASSWORD = "bbb"
 mainlist = ["ニンジン","トマト","レタス"]
 sublist = ["バジル","春菊","ほうれん草"]
-type = [0,1,0,1,0,1]
-y = [5,15,25,35,45,55]
-x = [10,20,10,20,10,20]
-COUNT = 6
+type = [0,1,0,1]
+y = [5,15,25,35]
+x = [10,20,10,20]
+COUNT = len(x)
 
 class Main(object):
     """
@@ -317,8 +317,7 @@ class Main(object):
                     self.msg_main.arm_drill_req = 2
                     self.msg_main.webapp_completion = self.armcount
                 self.drillstatus_o = self.drillstatus
-
-            
+        #print("self.movestatus:"+str(self.movestatus)+" self.footcount:"+str(self.footcount)+" self.drillstatus:"+str(self.drillstatus)+" self.armcount:"+str(self.armcount))
         # メッセージを発行する
         self.pub_main.publish(self.msg_main)
 

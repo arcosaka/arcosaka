@@ -35,6 +35,12 @@ MOVE_COMPLETE = 1
 MOVE_IDLE = 2
 MOVE_INPROGRESS_PAUSE = 3
 
+LIMIT_WIDTH_SYSTEM_ORDER = 273
+LIMIT_WIDTH_CM    = 45
+UNE_WIDTH_CM      = 30
+SYSTEMORDER_PER_CM = LIMIT_WIDTH_SYSTEM_ORDER/LIMIT_WIDTH_CM
+
+ARM_OFFSET = (LIMIT_WIDTH_SYSTEM_ORDER - (UNE_WIDTH_CM*SYSTEMORDER_PER_CM))/2
 
 class Arm(object):
     """
@@ -104,11 +110,11 @@ class Arm(object):
             time.sleep(1)
             self.retorgcnt = 1
         if self.retorgcnt == 1 :
-            handy = ((273 - (30 * 6)) / 2) + (self.drill_width[self.y_index] * 6)
+            handy = ARM_OFFSET + (self.drill_width[self.y_index] * SYSTEMORDER_PER_CM)
             if handy < 0 :
                 handy = 0
-            elif handy > 273 :
-                handy = 273
+            elif handy > LIMIT_WIDTH_SYSTEM_ORDER :
+                handy = LIMIT_WIDTH_SYSTEM_ORDER
             
             self.stmc.move_step(handy)  # y軸移動
             time.sleep(2)
@@ -132,11 +138,12 @@ class Arm(object):
             if self.operation == OPE_START:
                 self.move_status = MOVE_INPROGRESS
                 self.y_index = self.y_index + 1
+                self.msg_arm.drillstatus = 0
         
         # INPROGRESS
         elif self.move_status == MOVE_INPROGRESS:
             # -> COMPLETE
-            self.msg_arm.drillstatus = 0
+            #self.msg_arm.drillstatus = 0
             self.movestep()
             self.moveservo()
             self.move_status = MOVE_COMPLETE
