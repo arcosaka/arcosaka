@@ -64,20 +64,16 @@ class Arm(object):
         # 送信メッセージ初期化
         self.clearMsg()
         
-        # MortorClass
-        self.stmc = mortor.StepMortorClass(DEBUG_ARM, (PORT_HANDV_A, PORT_HANDV_B), (LIM_HANDV_MIN, LIM_HANDV_MAX))
-        
+        # MortorClass        
         self.svmc = mortor.ServoMortorClass(DEBUG_ARM)
         self.svmc.move_servo(CHANNEL_HAND, 80)
-
+        
+        self.stmc = mortor.StepMortorClass(DEBUG_ARM, (PORT_HANDV_A, PORT_HANDV_B), (LIM_HANDV_MIN, LIM_HANDV_MAX))
+        self.stmc.move_posinit_step()
 
         self.move_status = MOVE_IDLE
         self.operation = OPE_PAUSE
         self.y_index = -1
-        
-        #self.drill_width = []
-        
-        self.retorgcnt = 0
         
         
 #--------------------
@@ -96,7 +92,7 @@ class Arm(object):
         クライアントの受信コールバック
         """
         # メッセージ受信
-        self.ridge_width = main_msg.arm_ridge_width        
+        self.ridge_width = main_msg.arm_ridge_width
         self.drill_width = main_msg.arm_drill_width
         
         self.operation = main_msg.arm_drill_req
@@ -105,19 +101,14 @@ class Arm(object):
 #--------------------
 # ステッピングモータ動作関数
     def movestep(self):
-        if self.retorgcnt == 0 :
-            self.stmc.move_posinit_step()
-            time.sleep(1)
-            self.retorgcnt = 1
-        if self.retorgcnt == 1 :
-            handy = ARM_OFFSET + (self.drill_width[self.y_index] * SYSTEMORDER_PER_CM)
-            if handy < 0 :
-                handy = 0
-            elif handy > LIMIT_WIDTH_SYSTEM_ORDER :
-                handy = LIMIT_WIDTH_SYSTEM_ORDER
-            
-            self.stmc.move_step(handy)  # y軸移動
-            time.sleep(2)
+        handy = ARM_OFFSET + (self.drill_width[self.y_index] * SYSTEMORDER_PER_CM)
+        if handy < 0 :
+            handy = 0
+        elif handy > LIMIT_WIDTH_SYSTEM_ORDER :
+            handy = LIMIT_WIDTH_SYSTEM_ORDER
+        
+        self.stmc.move_step(handy)  # y軸移動
+        time.sleep(2)
 
 
 #--------------------
