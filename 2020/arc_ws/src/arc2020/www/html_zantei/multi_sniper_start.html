@@ -11,7 +11,7 @@
 		    <p>走行距離</p>
     		<div style="text-align: center;float:center;">
             <!-- disabled valueに出力する.msgのIFを指定する -->
-            <p><text id="mileage">--</text>m<br>
+            <p><text id="mileage">--</text>cm<br>
 			
 			<p>進捗状況</p>
 		    <p><font color="red">●</font>main:<text id="main">--</text><br><font color="green">●</font>sub:<text id="sub">--</text></p>
@@ -74,7 +74,7 @@
 					var c = canvas.getContext('2d');
 					var color = ['red','green'];
 					var rlength = 5;
-					var bairitu = 20;
+					var bairitu = 6;
 					c.clearRect(0,0,400,200);
 					for(var i = 0; i < type.length; i++){
 						// パスの開始

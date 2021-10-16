@@ -61,7 +61,7 @@ class ServoMortorClass(object):
         """
         lim_srt = SERVO_MIN
 
-        print("servo mortor init c=%d\tsrt=%d" % (channel, lim_srt))
+        #print("servo mortor init c=%d\tsrt=%d" % (channel, lim_srt))
         self.move_servo_pulse(channel, lim_srt)
     # end posinit
 
@@ -96,7 +96,7 @@ class ServoMortorClass(object):
         else:
             pass
 
-        print("pulse = %d" % pulse)
+        #print("pulse = %d" % pulse)
 
         if self.is_notdebug:
             self.pwm.set_pwm(channel, 0, int(pulse))
@@ -129,7 +129,7 @@ class StepMortorClass(object):
 
                 self.port_a = ports[0]
                 self.port_b = ports[1]
-                print("step mortor port = %d,%d" % (self.port_a, self.port_b))
+                #print("step mortor port = %d,%d" % (self.port_a, self.port_b))
                 self.port_en = port_en
                 self.pic.set_mode(self.port_a, pigpio.OUTPUT)
                 self.pic.set_mode(self.port_b, pigpio.OUTPUT)
@@ -143,8 +143,8 @@ class StepMortorClass(object):
                     self.limit_min = limit[1]
                     self.limit_max = limit[0]
 
-                print("step mortor limit = %d,%d" %
-                      (self.limit_min, self.limit_max))
+                #print("step mortor limit = %d,%d" %
+                #      (self.limit_min, self.limit_max))
                 self.stepcnt = 0
                 self.step_o = 0
                 self.step_n = 0
@@ -175,7 +175,7 @@ class StepMortorClass(object):
         else:
             limit = 0
         setpos = int(limit * steplotate)
-        print("step mortor setpos = %d" % (setpos))
+        #print("step mortor setpos = %d" % (setpos))
         self.issetpos = True
         self.move_posinit_step(setpos)
         self.issetpos = False
@@ -252,8 +252,8 @@ class StepMortorClass(object):
         self.step_n = step - self.step_o
         self.step_o = step
         stepping = self.stepcnt + self.step_n
-        print("step mortor     step = %d" % (self.step_n))
-        print("step mortor stepping = %d" % (stepping))
+        #print("step mortor     step = %d" % (self.step_n))
+        #print("step mortor stepping = %d" % (stepping))
 
         wait_hl = (1.0 / freq * (STEP_DUTY / 100.0))
         wait_lh = (1.0 / freq * (1 - (STEP_DUTY / 100.0)))

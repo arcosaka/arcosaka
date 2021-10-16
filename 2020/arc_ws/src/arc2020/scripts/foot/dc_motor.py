@@ -48,7 +48,7 @@ class DCMotor(object):
                 # 停止はどうかくのか考え中
                 self.pi.set_PWM_dutycycle(self.PINS[0], CENTER)
                 #self.pi.set_PWM_dutycycle(self.PINS[1], 0) #デューティー比変更
-        print("in "+str(inDuty)+" out"+str(self.duty))
+        #print("in "+str(inDuty)+" out"+str(self.duty))
         #print("pwm1 "+str(pwm1)+" pwm2 "+str(pwm2))
         #time.sleep(0.5)
 

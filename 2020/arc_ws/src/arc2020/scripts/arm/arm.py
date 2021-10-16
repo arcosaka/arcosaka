@@ -15,8 +15,6 @@ import mortor
 # 自分で定義したmessageファイルから生成されたモジュール
 #受信
 from arc2020.msg import main
-from arc2020.msg import servo
-from arc2020.msg import step
 
 #送信
 from arc2020.msg import arm
@@ -25,6 +23,18 @@ from arc2020.msg import arm
 from arm_consts import *
 
 CYCLES = 60 
+
+# OPERATION
+OPE_START = 1
+OPE_PAUSE = 2
+OPE_STOP  = 0
+
+# MOVE_STATUS
+MOVE_INPROGRESS = 0
+MOVE_COMPLETE = 1
+MOVE_IDLE = 2
+MOVE_INPROGRESS_PAUSE = 3
+
 
 class Arm(object):
     """
@@ -38,8 +48,6 @@ class Arm(object):
         """
         # 受信作成
         self.sub_main  = rospy.Subscriber('main', main, self.mainCallback, queue_size=1)
-        self.sub_servo  = rospy.Subscriber('servo', servo, self.servoCallback, queue_size=1)
-        self.sub_step  = rospy.Subscriber('step', step, self.stepCallback, queue_size=1)
         
         # 送信作成
         self.pub_arm = rospy.Publisher('arm', arm, queue_size=100)
@@ -50,8 +58,21 @@ class Arm(object):
         # 送信メッセージ初期化
         self.clearMsg()
         
-        self.servostatus = 0
-        self.stepstatus = 0
+        # MortorClass
+        self.stmc = mortor.StepMortorClass(DEBUG_ARM, (PORT_HANDV_A, PORT_HANDV_B), (LIM_HANDV_MIN, LIM_HANDV_MAX))
+        
+        self.svmc = mortor.ServoMortorClass(DEBUG_ARM)
+        self.svmc.move_servo(CHANNEL_HAND, 80)
+
+
+        self.move_status = MOVE_IDLE
+        self.operation = OPE_PAUSE
+        self.y_index = -1
+        
+        #self.drill_width = []
+        
+        self.retorgcnt = 0
+        
         
 #--------------------
 # 送信メッセージの初期化
@@ -59,12 +80,8 @@ class Arm(object):
         """
         publishするメッセージのクリア
         """
-        #for all
-        self.msg_arm.drill_req = 0
-        self.msg_arm.armdrillstatus = 0
-        self.msg_arm.drill_height_value = 0
-        self.msg_arm.drill_width_value = 0
-        self.msg_arm.armretorgsw = 0
+        self.msg_arm.drillstatus = 1
+        self.msg_arm.retorgstatus = 0
         
 #--------------------
 # 受信コールバック
@@ -73,36 +90,69 @@ class Arm(object):
         クライアントの受信コールバック
         """
         # メッセージ受信
+        self.ridge_width = main_msg.arm_ridge_width        
+        self.drill_width = main_msg.arm_drill_width
         
-        self.msg_arm.drill_req = main_msg.drill_req
-        self.msg_arm.drill_width_value = main_msg.drill_width_value
-        self.msg_arm.drill_height_value = main_msg.drill_height_value
-        
+        self.operation = main_msg.arm_drill_req
+
+
 #--------------------
-# 受信コールバック
-    def servoCallback(self, servo_msg):
-        """
-        クライアントの受信コールバック
-        """
-        self.servostatus = servo_msg.servostatus
-        
+# ステッピングモータ動作関数
+    def movestep(self):
+        if self.retorgcnt == 0 :
+            self.stmc.move_posinit_step()
+            time.sleep(1)
+            self.retorgcnt = 1
+        if self.retorgcnt == 1 :
+            handy = ((273 - (30 * 6)) / 2) + (self.drill_width[self.y_index] * 6)
+            if handy < 0 :
+                handy = 0
+            elif handy > 273 :
+                handy = 273
+            
+            self.stmc.move_step(handy)  # y軸移動
+            time.sleep(2)
+
+
 #--------------------
-# 受信コールバック
-    def stepCallback(self, step_msg):
-        """
-        クライアントの受信コールバック
-        """
-        self.msg_arm.armretorgsw = step_msg.retorgsw
-        self.stepstatus = step_msg.stepstatus
-        
+# サーボモータ動作関数
+    def moveservo(self):
+        self.svmc.move_servo(CHANNEL_HAND, 30)  # z軸移動
+        time.sleep(0.5)
+        self.svmc.move_servo(CHANNEL_HAND, 80)  # z軸移動
+        time.sleep(2)
+
 
 #--------------------
 # メイン関数
     def main(self):
-        if self.servostatus == 1 or self.stepstatus == 1 :
-            self.msg_arm.armdrillstatus = 1
-        else :
-            self.msg_arm.armdrillstatus = 0
+        #print("arm:"+str(self.move_status)+","+str(self.stepstatus)+","+str(self.msg_arm.drill_req_step)+","+str(self.servostatus))
+        if self.move_status == MOVE_IDLE:
+            # -> INPROGRESS
+            if self.operation == OPE_START:
+                self.move_status = MOVE_INPROGRESS
+                self.y_index = self.y_index + 1
+        
+        # INPROGRESS
+        elif self.move_status == MOVE_INPROGRESS:
+            # -> COMPLETE
+            self.msg_arm.drillstatus = 0
+            self.movestep()
+            self.moveservo()
+            self.move_status = MOVE_COMPLETE
+        
+        # INPROGRESS_PAUSE
+        elif self.move_status == MOVE_INPROGRESS_PAUSE:
+            # -> INPROGRESS
+            if self.operation == OPE_START:
+                self.move_status = MOVE_INPROGRESS
+        
+        # COMPLETE
+        elif self.move_status == MOVE_COMPLETE:
+            # -> IDLE
+            self.msg_arm.drillstatus = 1
+            if self.operation == OPE_PAUSE:
+                self.move_status = MOVE_IDLE
         
         # メッセージを発行する
         self.pub_arm.publish(self.msg_arm)
