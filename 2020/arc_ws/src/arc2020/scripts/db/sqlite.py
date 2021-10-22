@@ -92,7 +92,6 @@ class sqlite(object):
         #print 'printしますよ！！'
         # terminalで実行したSQL文と同じようにexecute()に書く
         command = 'SELECT 野菜2 FROM yasai WHERE 野菜1 = \'' + vegetable_num1 + '\'group by 野菜2'
-        #command = 'SELECT 野菜2 FROM yasai WHERE 野菜1 = \'小カブ\' group by 野菜2'
         self.cursor.execute( command )
 
         # 中身を全て取得するfetchall()を使って、printする。
@@ -103,16 +102,34 @@ class sqlite(object):
     def selectyasaihaichi(self,vegetable_num1,vegetable_num2,ridge_width,ridge_length):
         self.open()
 
-        print(ridge_width)
-        print(ridge_length)
+        #print(ridge_width)
+        #print(ridge_length)
 
-        command = 'SELECT 配置 FROM yasai WHERE 野菜1 = \'' + vegetable_num1 + '\' AND 野菜2 = \'' + vegetable_num2 + '\' AND 幅 = ' + ridge_width + ' AND 長さ = 10 '
-        #command = 'SELECT 配置 FROM yasai WHERE 野菜1 = \'' + vegetable_num1 + '\' AND 野菜2 = \'' + vegetable_num2 + '\' AND 幅 = 10 AND 長さ = 60 '
-        #command = 'SELECT 配置 from yasai where 野菜1 = \'小カブ\' AND 野菜2 = \'春菊\' AND 幅 = 10 AND 長さ = 60'
+        command = 'SELECT 配置 FROM yasai WHERE 野菜1 = \'' + vegetable_num1 + '\' AND 野菜2 = \'' + vegetable_num2 + '\' AND 幅 = ' + str(ridge_width) + ' AND 長さ = ' + str(ridge_length)
+#        print(command)
         self.cursor.execute( command )
-
         # 中身を全て取得するfetchall()を使って、printする。
-        moji = self.cursor.fetchall()
+        haichi = self.cursor.fetchall()
 
-        return moji
+        command = 'SELECT 野菜1間隔縦(cm) FROM yasai WHERE 野菜1 = \'' + vegetable_num1 + '\' AND 野菜2 = \'' + vegetable_num2 + '\' AND 幅 = ' + str(ridge_width) + ' AND 長さ = ' + str(ridge_length)
+        self.cursor.execute( command )
+        # 中身を全て取得するfetchall()を使って、printする。
+        yasai1 = self.cursor.fetchall()
+
+        command = 'SELECT 野菜2間隔縦(cm） FROM yasai WHERE 野菜1 = \'' + vegetable_num1 + '\' AND 野菜2 = \'' + vegetable_num2 + '\' AND 幅 = ' + str(ridge_width) + ' AND 長さ = ' + str(ridge_length)
+        self.cursor.execute( command )
+        # 中身を全て取得するfetchall()を使って、printする。
+        yasai2 = self.cursor.fetchall()
+
+        command = 'SELECT 野菜1の数 FROM yasai WHERE 野菜1 = \'' + vegetable_num1 + '\' AND 野菜2 = \'' + vegetable_num2 + '\' AND 幅 = ' + str(ridge_width) + ' AND 長さ = ' + str(ridge_length)
+        self.cursor.execute( command )
+        # 中身を全て取得するfetchall()を使って、printする。
+        yasai1s = self.cursor.fetchall()
+
+        command = 'SELECT 野菜2の数 FROM yasai WHERE 野菜1 = \'' + vegetable_num1 + '\' AND 野菜2 = \'' + vegetable_num2 + '\' AND 幅 = ' + str(ridge_width) + ' AND 長さ = ' + str(ridge_length)
+        self.cursor.execute( command )
+        # 中身を全て取得するfetchall()を使って、printする。
+        yasai2s = self.cursor.fetchall()
+
+        return haichi, yasai1, yasai2, yasai1s, yasai2s
 

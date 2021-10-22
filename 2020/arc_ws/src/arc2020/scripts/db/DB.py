@@ -74,12 +74,21 @@ class DB(object):
            self.msg_database.mainseedlist = copy.copy(aaa)
 
         bbb = ','.join(msg.database_vegetable_num1)
-        print (bbb)
+#        print (bbb)
         self.msg_database.subseedlist = self.db.selectyasai2(bbb)
         ccc = ','.join(msg.database_vegetable_num2)
-        print (ccc)
-        haichi = self.db.selectyasaihaichi(bbb,ccc,msg.database_ridge_width,msg.database_ridge_length)
-        print (haichi)
+#        print (ccc)
+        haichi, yasai1, yasai2, yasai1s, yasai2s = self.db.selectyasaihaichi(bbb,ccc,msg.database_ridge_width,msg.database_ridge_length)
+        for rows in haichi: 
+          print rows[0]
+        for rows in yasai1: 
+          print rows[0]
+        for rows in yasai2: 
+          print rows[0]
+        for rows in yasai1s: 
+          print rows[0]
+        for rows in yasai2s: 
+          print rows[0]
 
 #--------------------
     def main(self):
@@ -99,10 +108,10 @@ class DB(object):
         self.pub_database.publish(self.msg_database)
         print('mainが動いていますよ！！')
         #print(self.msg_database)
-        #for rows in self.msg_database.mainseedlist: 
-        #  print rows[0]
-        for rows in self.msg_database.subseedlist: 
-          print rows[0]
+#        for rows in self.msg_database.mainseedlist: 
+#          print rows[0]
+#        for rows in self.msg_database.subseedlist: 
+#          print rows[0]
 
 def DB_py():
     # 初期化宣言 : このソフトウェアは"DB_py_node"という名前
