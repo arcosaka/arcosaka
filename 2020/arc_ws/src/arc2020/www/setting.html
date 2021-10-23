@@ -6,13 +6,14 @@
 	<title>Multi Sniper Setting</title>
 	<script src="eventemitter2.min.js"></script>
 	<script src="roslib.min.js"></script>
-	<script src="ros_communication.js"></script> 
+	<script src="ros_communication.js"></script>
+    <meta name='viewport' content='width=device-width,initial-scale=1.0'>
    </head>
    		<body>
 			<p><center><font size="5">Multi Sniper</font>
 			<!-- バッテリー残量取得 -->
 
-			<p>80%<meter value="0.8">%</meter></p>
+			<p>100%<meter value="1.0">%</meter></p>
 			<p>メイン品種選択</p>
 				<select name="main", id="selectMain">
 					<option value="0">--</option>
@@ -73,7 +74,7 @@
 					){
 						var main = encodeURI(mainvalue)
 						var sub = encodeURI(subvalue)
-						window.location.href ="multi_sniper_out.html?main=" + main + "&sub=" + sub+ "&l=" + lengthvalue+ "&w=" + widthvalue + "&h=" + heightvalue;
+						window.location.href ="out.html?main=" + main + "&sub=" + sub+ "&l=" + lengthvalue+ "&w=" + widthvalue + "&h=" + heightvalue;
 					}
 				}
 				function addSeedList(select,list){
@@ -100,7 +101,7 @@
 					if(message.webapp_subseedlist[0] != ""){
 						addSeedList(selectSub,message.webapp_subseedlist);
 					}
-					//window.location.href ='multi_sniper_setting.html';
+					//window.location.href ='setting.html';
 				}
 			</script>
   		</body>

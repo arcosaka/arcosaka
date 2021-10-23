@@ -4,6 +4,7 @@
     <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
     <!--<link rel="stylesheet" type="text/css" href="debug.css"> -->
     <title>Multi Sniper Out</title>
+    <meta name='viewport' content='width=device-width,initial-scale=1.0'>
    </head>
   
    		<body>
@@ -19,7 +20,7 @@
 				}
 			</style>
 			</div>
-			<a href="multi_sniper_setting.html">
+			<a href="setting.html">
 			<img src="img/back.jpg" alt="back"></a>
 			<img src="img/Start.jpg" onclick="start()"></a>
 		    </center></p>
@@ -67,11 +68,12 @@
 					var c = canvas.getContext('2d');
 					var color = ['red','green'];
 					c.strokeStyle = 'red';  // 線の色
+					c.clearRect(0,0,400,200);
 					for(var i = 0; i < type.length; i++){
 						// パスの開始
 						c.fillStyle = color[type[i]];  // 塗りつぶしの色
 						c.beginPath();
-						c.arc(y[i]*5, x[i]*5, 5, 0, 2 * Math.PI, false);
+						c.arc(y[i], x[i]*5, 5, 0, 2 * Math.PI, false);
 						// 描画
 						c.fill();
 						//c.stroke();
@@ -79,7 +81,7 @@
 				}
 				function start(){
 					var querys = getUrlQueries();
-					window.location.href ='multi_sniper_start.html?main=' + querys["main"] + "&sub=" + querys["sub"] + "&l=" + querys["l"]+ "&w=" + querys["w"] + "&h=" + querys["h"];
+					window.location.href ='start.html?main=' + querys["main"] + "&sub=" + querys["sub"] + "&l=" + querys["l"]+ "&w=" + querys["w"] + "&h=" + querys["h"];
 				}
 			</script>
   		</body>

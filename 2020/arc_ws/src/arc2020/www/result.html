@@ -4,6 +4,7 @@
     <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
     <!--<link rel="stylesheet" type="text/css" href="debug.css"> -->
     <title>Multi Sniper Start</title>
+    <meta name='viewport' content='width=device-width,initial-scale=1.0'>
    </head>
    		<body>
 		    <p><center><font size="5">Multi Sniper</font>
@@ -20,7 +21,7 @@
 			</style>
 			</div>
 			<div id="control">
-				<a href="multi_sniper_pause.html">
+				<a href="pause.html">
 				<img src="img/end.jpg" alt="end" height="43" width="120"></a>
 			</div>
 			<script src="eventemitter2.min.js"></script>
@@ -86,7 +87,7 @@
 				
 				function toFinish(){
 					var querys = getUrlQueries();
-					window.location.href ='multi_sniper_complete.html?main=' + querys["main"] + "&sub=" + querys["sub"] + "&l=" + querys["l"]+ "&w=" + querys["w"] + "&h=" + querys["h"];
+					window.location.href ='complete.html?main=' + querys["main"] + "&sub=" + querys["sub"] + "&l=" + querys["l"]+ "&w=" + querys["w"] + "&h=" + querys["h"];
 				}
 			</script>			
 		    </center></p>

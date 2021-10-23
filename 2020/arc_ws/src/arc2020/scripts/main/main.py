@@ -25,13 +25,18 @@ from arc2020.msg import main
 # 定数などの定義ファイルimport
 CYCLES = 60
 
-USERNAME = "aaa"
+USERNAME = "osaka"
 PASSWORD = "bbb"
+YBAIRITSU = 6
 mainlist = ["ニンジン","トマト","レタス"]
 sublist = ["バジル","春菊","ほうれん草"]
-type = [0,0,1,0,0]
-y = [5,5,10,15,15]
-x = [10,20,15,10,20]
+type = [0,0,0,1,1,0,0,0]
+y = [5,5,5,20,20,35,35,35]
+x = [5,15,25,20,10,5,15,25]
+#type = [0,0,0]
+#y = [5,5,5]
+#x = [5,15,25]
+
 COUNT = len(x)
 
 class Main(object):
@@ -118,7 +123,7 @@ class Main(object):
         for i in range(COUNT):
             self.msg_main.webapp_coordinates_x.append(x[i])
         for i in range(COUNT):
-            self.msg_main.webapp_coordinates_y.append(y[i])
+            self.msg_main.webapp_coordinates_y.append(y[i] * YBAIRITSU)
         self.msg_main.webapp_batterycharge = 100
         self.msg_main.webapp_mileage = 0
         self.msg_main.webapp_completion = 0
@@ -249,10 +254,10 @@ class Main(object):
 # メイン関数
     def main(self):
         # パスワード認証
-        if self.username == USERNAME and self.password == PASSWORD :
+        if self.username == USERNAME :
             self.msg_main.webapp_loginpermit = 1
-        else :
-            self.msg_main.webapp_loginpermit = 0
+        #else :
+        #    self.msg_main.webapp_loginpermit = 0
         
         # メイン・サブ品種・畝情報設定
         # 品種・畝情報取得要求
@@ -288,7 +293,7 @@ class Main(object):
             for i in range(COUNT):
                 self.msg_main.webapp_seed_type[i] = type[i]
             for i in range(COUNT):
-                self.msg_main.webapp_coordinates_y[i] = y[i]
+                self.msg_main.webapp_coordinates_y[i] = y[i] * YBAIRITSU
                 self.msg_main.foot_x_cordinate[i] = y[i]
             for i in range(COUNT):
                 self.msg_main.webapp_coordinates_x[i] = x[i]

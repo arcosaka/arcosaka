@@ -69,7 +69,9 @@ class Arm(object):
         self.svmc.move_servo(CHANNEL_HAND, 80)
         
         self.stmc = mortor.StepMortorClass(DEBUG_ARM, (PORT_HANDV_A, PORT_HANDV_B), (LIM_HANDV_MIN, LIM_HANDV_MAX))
+        time.sleep(1)
         self.stmc.move_posinit_step()
+        
 
         self.move_status = MOVE_IDLE
         self.operation = OPE_PAUSE
@@ -114,7 +116,7 @@ class Arm(object):
 #--------------------
 # サーボモータ動作関数
     def moveservo(self):
-        self.svmc.move_servo(CHANNEL_HAND, 30)  # z軸移動
+        self.svmc.move_servo(CHANNEL_HAND, 45)  # z軸移動
         time.sleep(0.5)
         self.svmc.move_servo(CHANNEL_HAND, 80)  # z軸移動
         time.sleep(2)

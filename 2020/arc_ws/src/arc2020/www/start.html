@@ -4,6 +4,7 @@
     <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
     <!--<link rel="stylesheet" type="text/css" href="debug.css"> -->
     <title>Multi Sniper Start</title>
+    <meta name='viewport' content='width=device-width,initial-scale=1.0'>
    </head>
    		<body>
 		    <p><center><font size="5">Multi Sniper</font>
@@ -26,9 +27,9 @@
 			<p>動作状態</p>
 			<img src="img/operating_conditions_normal_hoge.jpg" alt="動作状態" height="43" width="246" /><br>
 			<div id="control">
-				<a href="multi_sniper_pause.html">
+				<a href="pause.html">
 				<img src="img/pause.jpg" alt="pause" height="43" width="120"></a>
-				<a href="multi_sniper_result.html">
+				<a href="result.html">
 				<img src="img/Interruption.jpg" alt="Interruption" height="43" width="120"></a><br>
 			</div>
 			<script src="eventemitter2.min.js"></script>
@@ -74,14 +75,15 @@
 					var c = canvas.getContext('2d');
 					var color = ['red','green'];
 					var rlength = 5;
-					var bairitu = 6;
+					var ybairitu = 1;
+					var xbairitu = 6;
 					c.clearRect(0,0,400,200);
 					for(var i = 0; i < type.length; i++){
 						// パスの開始
 						c.fillStyle = color[type[i]];  // 塗りつぶしの色
 						c.strokeStyle = color[type[i]];  // 塗りつぶしの色
 						c.beginPath();
-						c.arc(y[i]*bairitu, x[i]*bairitu, rlength, 0, 2 * Math.PI, false);
+						c.arc(y[i] , x[i]*xbairitu, rlength, 0, 2 * Math.PI, false);
 						// 描画
 						if(i<comp){
 							c.stroke();
@@ -102,7 +104,7 @@
 
 				function toComplete(){
 					var querys = getUrlQueries();
-					window.location.href ='multi_sniper_result.html?main=' + querys["main"] + "&sub=" + querys["sub"] + "&l=" + querys["l"]+ "&w=" + querys["w"] + "&h=" + querys["h"];
+					window.location.href ='result.html?main=' + querys["main"] + "&sub=" + querys["sub"] + "&l=" + querys["l"]+ "&w=" + querys["w"] + "&h=" + querys["h"];
 				}
 			</script>			
 		    </center></p>

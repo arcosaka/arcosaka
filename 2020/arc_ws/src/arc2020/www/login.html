@@ -6,6 +6,7 @@
     <title>Multi Sniper Login</title>
     <script src="eventemitter2.min.js"></script>
     <script src="roslib.min.js"></script>
+    <meta name='viewport' content='width=device-width,initial-scale=1.0'>
    </head>
    		<body>
    		    <!-- タイトル -->
@@ -20,6 +21,7 @@
             <!-- location.href="ここにメイン選択のパスを設定" -->
             <p><input type="button" onclick=loginmsglatch() value="Login"></p>
                 <script>
+		window.onload = loginmsglatch;
                 function loginmsglatch(){
                 //テキストボックスの値を取得
                     var value_username = document.getElementById("username").value;
@@ -28,7 +30,7 @@
                 }
                 function callback(message){
                     if(message.webapp_loginpermit == true){
-                        window.location.href ='multi_sniper_setting.html';
+                        window.location.href ='setting.html';
                     }
                 }
                 </script>
