@@ -79,16 +79,38 @@ class DB(object):
         ccc = ','.join(msg.database_vegetable_num2)
 #        print (ccc)
         haichi, yasai1, yasai2, yasai1s, yasai2s = self.db.selectyasaihaichi(bbb,ccc,msg.database_ridge_width,msg.database_ridge_length)
-        for rows in haichi: 
-          print rows[0]
-        for rows in yasai1: 
-          print rows[0]
-        for rows in yasai2: 
-          print rows[0]
-        for rows in yasai1s: 
-          print rows[0]
-        for rows in yasai2s: 
-          print rows[0]
+#        print ('printしますよ')
+        haichi_0  = int(haichi[0][0]) 
+        yasai1_0  = int(yasai1[0][0]) 
+        yasai2_0  = int(yasai2[0][0]) 
+        yasai1s_0 = int(yasai1s[0][0]) 
+        yasai2s_0 = int(yasai2s[0][0]) 
+        print (haichi_0)
+        print (yasai1_0)
+        print (yasai2_0)
+        print (yasai1s_0)
+        print (yasai2s_0)
+
+        self.msg_database.seed_type     = [0, 1, 0]
+        self.msg_database.coordinates_x = [5, 5, 5]
+        self.msg_database.coordinates_y = [15, 30, 45]
+
+#        db = yasai1_0 / 5
+#        print (db)
+#        print (yasai1)
+#        print (yasai2)
+#        print (yasai1s)
+#        print (yasai2s)
+#        for rows in haichi: 
+#            print rows[0]
+#        for rows in yasai1: 
+#            print rows[0]
+#        for rows in yasai2: 
+#          print rows[0]
+#        for rows in yasai1s: 
+#          print rows[0]
+#        for rows in yasai2s: 
+#          print rows[0]
 
 #--------------------
     def main(self):
@@ -102,9 +124,9 @@ class DB(object):
         #self.msg_database.mainseedlist = copy.copy(aaa)
 #        self.msg_database.mainseedlist = 'aaa'
 #        self.msg_database.subseedlist = 'bbb'
-        self.msg_database.seed_type = '0'
-        self.msg_database.coordinates_x = 20
-        self.msg_database.coordinates_y = 30
+#        self.msg_database.seed_type = 0
+#        self.msg_database.coordinates_x = 20
+#        self.msg_database.coordinates_y = 30
         self.pub_database.publish(self.msg_database)
         print('mainが動いていますよ！！')
         #print(self.msg_database)

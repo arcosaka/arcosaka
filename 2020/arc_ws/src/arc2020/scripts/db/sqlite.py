@@ -110,26 +110,31 @@ class sqlite(object):
         self.cursor.execute( command )
         # 中身を全て取得するfetchall()を使って、printする。
         haichi = self.cursor.fetchall()
+#        print (haichi)
 
-        command = 'SELECT 野菜1間隔縦(cm) FROM yasai WHERE 野菜1 = \'' + vegetable_num1 + '\' AND 野菜2 = \'' + vegetable_num2 + '\' AND 幅 = ' + str(ridge_width) + ' AND 長さ = ' + str(ridge_length)
+        command = 'SELECT 野菜1間隔縦 FROM yasai WHERE 野菜1 = \'' + vegetable_num1 + '\' AND 野菜2 = \'' + vegetable_num2 + '\' AND 幅 = ' + str(ridge_width) + ' AND 長さ = ' + str(ridge_length)
         self.cursor.execute( command )
         # 中身を全て取得するfetchall()を使って、printする。
         yasai1 = self.cursor.fetchall()
+#        print (yasai1)
 
-        command = 'SELECT 野菜2間隔縦(cm） FROM yasai WHERE 野菜1 = \'' + vegetable_num1 + '\' AND 野菜2 = \'' + vegetable_num2 + '\' AND 幅 = ' + str(ridge_width) + ' AND 長さ = ' + str(ridge_length)
+        command = 'SELECT 野菜2間隔縦 FROM yasai WHERE 野菜1 = \'' + vegetable_num1 + '\' AND 野菜2 = \'' + vegetable_num2 + '\' AND 幅 = ' + str(ridge_width) + ' AND 長さ = ' + str(ridge_length)
         self.cursor.execute( command )
         # 中身を全て取得するfetchall()を使って、printする。
         yasai2 = self.cursor.fetchall()
+#        print (yasai2)
 
         command = 'SELECT 野菜1の数 FROM yasai WHERE 野菜1 = \'' + vegetable_num1 + '\' AND 野菜2 = \'' + vegetable_num2 + '\' AND 幅 = ' + str(ridge_width) + ' AND 長さ = ' + str(ridge_length)
         self.cursor.execute( command )
         # 中身を全て取得するfetchall()を使って、printする。
         yasai1s = self.cursor.fetchall()
+#        print (yasai1s)
 
         command = 'SELECT 野菜2の数 FROM yasai WHERE 野菜1 = \'' + vegetable_num1 + '\' AND 野菜2 = \'' + vegetable_num2 + '\' AND 幅 = ' + str(ridge_width) + ' AND 長さ = ' + str(ridge_length)
         self.cursor.execute( command )
         # 中身を全て取得するfetchall()を使って、printする。
         yasai2s = self.cursor.fetchall()
+#        print (yasai2s)
 
         return haichi, yasai1, yasai2, yasai1s, yasai2s
 
