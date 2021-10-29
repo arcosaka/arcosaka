@@ -105,10 +105,22 @@ class DB(object):
         for num in range(yasai_sum):
             if haichi_0 == 1:
                 self.msg_database.coordinates_x.append(haba / 2)
+            elif haichi_0 == 2:
+                if num % 2 == 0:
+                    self.msg_database.coordinates_x.append(haba / 4)
+                else:
+                    self.msg_database.coordinates_x.append(haba / 4 + haba)
 
         for num in range(yasai_sum):
-            ynagasa += yasai1_ktate
-            self.msg_database.coordinates_y.append(ynagasa)
+            if haichi_0 == 1:
+                ynagasa += yasai1_ktate
+                self.msg_database.coordinates_y.append(ynagasa)
+            elif haichi_0 == 2:
+                if num % 2 == 0:
+                    ynagasa += yasai1_ktate
+                    self.msg_database.coordinates_y.append(ynagasa)
+                else:
+                    self.msg_database.coordinates_y.append(ynagasa)
 
         for num in range(yasai_sum):
             if num % 2 == 0:
