@@ -80,60 +80,60 @@ class DB(object):
 #        print (ccc)
         haichi, yasai1, yasai2, yasai1s, yasai2s = self.db.selectyasaihaichi(bbb,ccc,msg.database_ridge_width,msg.database_ridge_length)
 #        print ('printしますよ')
+
+        haba = msg.database_ridge_width
+        nagasa = msg.database_ridge_length
+
         haichi_0  = int(haichi[0][0]) 
-        yasai1_0  = int(yasai1[0][0]) 
-        yasai2_0  = int(yasai2[0][0]) 
-        yasai1s_0 = int(yasai1s[0][0]) 
-        yasai2s_0 = int(yasai2s[0][0]) 
+        yasai1_ktate  = int(yasai1[0][0]) 
+        yasai2_ktate  = int(yasai2[0][0]) 
+        yasai1_kazu = int(yasai1s[0][0]) 
+        yasai2_kazu = int(yasai2s[0][0]) 
         print (haichi_0)
-        print (yasai1_0)
-        print (yasai2_0)
-        print (yasai1s_0)
-        print (yasai2s_0)
+        print (yasai1_ktate)
+        print (yasai2_ktate)
+        print (yasai1_kazu)
+        print (yasai2_kazu)
 
-        self.msg_database.seed_type     = [0, 1, 0]
-        self.msg_database.coordinates_x = [5, 5, 5]
-        self.msg_database.coordinates_y = [15, 30, 45]
+        ynagasa = 0
+        self.msg_database.coordinates_x = []
+        self.msg_database.coordinates_y = []
+        self.msg_database.seed_type = []
 
-#        db = yasai1_0 / 5
-#        print (db)
-#        print (yasai1)
-#        print (yasai2)
-#        print (yasai1s)
-#        print (yasai2s)
-#        for rows in haichi: 
-#            print rows[0]
-#        for rows in yasai1: 
-#            print rows[0]
-#        for rows in yasai2: 
-#          print rows[0]
-#        for rows in yasai1s: 
-#          print rows[0]
-#        for rows in yasai2s: 
-#          print rows[0]
+        yasai_sum = yasai1_kazu + yasai2_kazu
+
+        for num in range(yasai_sum):
+            if haichi_0 == 1:
+                self.msg_database.coordinates_x.append(haba / 2)
+
+        for num in range(yasai_sum):
+            ynagasa += yasai1_ktate
+            self.msg_database.coordinates_y.append(ynagasa)
+
+        for num in range(yasai_sum):
+            if num % 2 == 0:
+                seedtype = 1
+            else:
+                seedtype = 0
+            self.msg_database.seed_type.append(seedtype)
+
+        print('xとyとseed_typeを表します。')
+
+        for x in self.msg_database.coordinates_x:
+            print(x)
+
+        for y in self.msg_database.coordinates_y:
+            print(y)
+
+        for stype in self.msg_database.seed_type:
+            print(stype)
+
 
 #--------------------
     def main(self):
         # メッセージを発行する
-        #self.msg_database.mainseedlist = []
-        #aaa = self.db.selectyasai1()
-        #self.msg_database.mainseedlist = self.db.selectyasai1()
-        #for rows in aaa: 
-        #  print rows[0]
-          #self.msg_database.mainseedlist += rows[0]
-        #self.msg_database.mainseedlist = copy.copy(aaa)
-#        self.msg_database.mainseedlist = 'aaa'
-#        self.msg_database.subseedlist = 'bbb'
-#        self.msg_database.seed_type = 0
-#        self.msg_database.coordinates_x = 20
-#        self.msg_database.coordinates_y = 30
         self.pub_database.publish(self.msg_database)
         print('mainが動いていますよ！！')
-        #print(self.msg_database)
-#        for rows in self.msg_database.mainseedlist: 
-#          print rows[0]
-#        for rows in self.msg_database.subseedlist: 
-#          print rows[0]
 
 def DB_py():
     # 初期化宣言 : このソフトウェアは"DB_py_node"という名前
