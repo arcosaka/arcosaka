@@ -8,6 +8,7 @@
 import time
 import atexit
 import os
+import signal
 
 from mortor_consts import \
     ADDR_PWM, \
@@ -135,6 +136,23 @@ class StepMortorClass(object):
                 self.pic.set_mode(self.port_b, pigpio.OUTPUT)
                 self.pic.set_mode(self.port_en, pigpio.OUTPUT)
                 self.pic.set_mode(RET_ORGSW, pigpio.INPUT)
+                
+                self.pic.wave_clear() # clear any existing waveforms
+
+                self.pulses =[]
+                self.waveId = []
+                self.createPulses(0)
+                # データを追加
+                self.pic.wave_add_generic(self.pulses)
+                # 作成
+                self.waveId.append(self.pic.wave_create()) # create and save id
+
+                self.pulses.remove()
+                self.createPulses(1)
+                # データを追加
+                self.pic.wave_add_generic(self.pulses)
+                # 作成
+                self.waveId.append(self.pic.wave_create()) # create and save id
 
                 if limit[0] < limit[1]:
                     self.limit_min = limit[0]
@@ -162,6 +180,17 @@ class StepMortorClass(object):
         else:
             print("step mortor is debug")
     # end __init__
+
+    def createPulses(self,direction):
+        a = self.port_a
+        b = self.port_b
+        delay = (1.0 / STEP_FREQ * (STEP_DUTY / 100.0))# usec?
+        if direction == 0:
+            self.pulses.append(pigpio.pulse(1<<a,1<<b,delay))
+            self.pulses.append(pigpio.pulse(1<<b,1<<a,delay))
+        else:
+            self.pulses.append(pigpio.pulse(1<<b,1<<a,delay))          
+            self.pulses.append(pigpio.pulse(1<<a,1<<b,delay))
 
     def posinit(self, steplotate):
         """
@@ -200,16 +229,8 @@ class StepMortorClass(object):
             self.pic.write(self.port_en, pigpio.HIGH)
             self.retorgsw = self.pic.read(RET_ORGSW)
             
+            self.setPulse(0)
             while self.retorgsw == 0:
-                self.pic.write(self.port_a, pigpio.HIGH)
-                time.sleep(wait_hl/2)
-                self.pic.write(self.port_b, pigpio.HIGH)
-                time.sleep(wait_hl/2)
-                self.pic.write(self.port_a, pigpio.LOW)
-                time.sleep(wait_lh/2)
-                self.pic.write(self.port_b, pigpio.LOW)
-                time.sleep(wait_lh/2)
-                
                 self.retorgsw = self.pic.read(RET_ORGSW)
 
         self.endfnc()
@@ -220,6 +241,7 @@ class StepMortorClass(object):
         """
         終了処理
         """
+        self.pic.wave_tx_stop()
         if self.stepcnt < self.limit_min:
             self.stepcnt = self.limit_min
         elif self.limit_max < self.stepcnt:
@@ -239,6 +261,8 @@ class StepMortorClass(object):
         # 要求値を1ステップ当たりの距離で割る
         step = int(distance / STEP_1PULSE)
         self.move_step_step(step)
+        self.endfnc()
+
     # end move_step
 
     def move_step_step(self, step, freq=-1):
@@ -257,7 +281,7 @@ class StepMortorClass(object):
 
         wait_hl = (1.0 / freq * (STEP_DUTY / 100.0))
         wait_lh = (1.0 / freq * (1 - (STEP_DUTY / 100.0)))
-
+        ontime = 1.0*self.step_n/STEP_DUTY
         if self.is_notdebug:
             self.pic.set_mode(self.port_en, pigpio.OUTPUT)
             self.pic.set_mode(self.port_a, pigpio.OUTPUT)
@@ -266,69 +290,26 @@ class StepMortorClass(object):
             if self.step_n != 0 :
                 self.pic.write(self.port_en, pigpio.HIGH)
 
-        for i in range(abs(self.step_n)):
-            if self.issetpos or (\
-                    self.is_notdebug \
-                    and (self.limit_min <= self.stepcnt) \
-                    and (self.stepcnt <= self.limit_max
-                )
-            ):
-                if stepping > self.stepcnt:
-                    self.pic.write(self.port_b, pigpio.HIGH)
-                    time.sleep(wait_hl/2)
-                    self.pic.write(self.port_a, pigpio.HIGH)
-                    time.sleep(wait_hl/2)
-                    self.pic.write(self.port_b, pigpio.LOW)
-                    time.sleep(wait_lh/2)
-                    self.pic.write(self.port_a, pigpio.LOW)
-                    time.sleep(wait_lh/2)
-                    self.stepcnt += 1
+        if self.issetpos or (\
+                self.is_notdebug \
+                and (self.limit_min <= self.stepcnt) \
+                and (self.stepcnt <= self.limit_max
+            )
+        ):
+            if stepping > self.stepcnt:
+                self.setPulse(1,ontime)
 
-                elif stepping < self.stepcnt:
-                    self.pic.write(self.port_a, pigpio.HIGH)
-                    time.sleep(wait_hl/2)
-                    self.pic.write(self.port_b, pigpio.HIGH)
-                    time.sleep(wait_hl/2)
-                    self.pic.write(self.port_a, pigpio.LOW)
-                    time.sleep(wait_lh/2)
-                    self.pic.write(self.port_b, pigpio.LOW)
-                    time.sleep(wait_lh/2)
-                    self.stepcnt -= 1
-            elif not(self.is_notdebug):
-                if stepping > self.stepcnt:
-                    print("port_a ON  %f" % wait_hl)
-                    time.sleep(wait_hl)
-                    print("port_b ON  %f" % wait_hl)
-                    time.sleep(wait_hl)
-                    print("port_a OFF %f" % wait_lh)
-                    time.sleep(wait_lh)
-                    print("port_b OFF %f" % wait_lh)
-                    time.sleep(wait_lh)
-                    self.stepcnt += 1
-
-                elif stepping < self.stepcnt:
-                    print("port_b ON  %f" % wait_hl)
-                    time.sleep(wait_hl)
-                    print("port_a ON  %f" % wait_hl)
-                    time.sleep(wait_hl)
-                    print("port_b OFF %f" % wait_lh)
-                    time.sleep(wait_lh)
-                    print("port_a OFF %f" % wait_lh)
-                    time.sleep(wait_lh)
-                    self.stepcnt -= 1
-            else:
-                break
-            # end if self.is_notdebug
-            #print("pulse  now = %d\tpulse goto = %d" %
-            #      (self.stepcnt, step))
-            if ((self.stepcnt <= self.limit_min) \
-                or (self.limit_max <= self.stepcnt)) \
-                and not(self.issetpos):
-                break
-            #print("pulse     = %d/%d" % (i+1, step))
-        # end for i in range(abs(step))
-
-        self.endfnc()
-
+            elif stepping < self.stepcnt:
+                self.setPulse(0,ontime)
+        # end if self.is_notdebug
     # end move_step_step
+
+        #self.endfnc()
+    def setPulse(self,direction,ontime=0):
+        self.pic.wave_send_repeat(self.waveId[direction])
+        time.sleep(ontime)
+        
+
+    # end setPulse
+
 # end StepMortorClass
