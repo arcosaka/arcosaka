@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>mjpg-osaka</title>
+    <style>
+        .flex{
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .cell{
+            width: 49%;
+        }
+        image{
+            width: 640px;
+            height: 480px;
+        }
+    </style>
+</head>
+<body>
+    <h1>mjpg-osaka</h1>
+    <div id="div_flex" class="flex">
+ 
+    </div>
+    <script>
+        function create_tag(num_idx,str_name){
+            const num_port =  parseInt(num_idx, 10) + 49200;
+            const str_domain = get_domain();
+            const str_url = `http://${str_domain}:49200/?action=stream_${num_idx}`;
+            const tag_div_flex = document.getElementById('div_flex');
+            const ele_div = document.createElement("div");
+            ele_div.id = `div_${str_name}`;
+            ele_div.className = "cell";
+            ele_div.innerHTML = `<h2>video${str_name}</h2><a href="${str_url}"><img id="img_${str_name}" src="${str_url}" width="640px" height="480px" /></a>`;
+            tag_div_flex.appendChild(ele_div);
+        }
+        function delete_tag(e){
+            const tag_img = e.target;
+            const tag_div = document.getElementById(tag_img.id.replace('img_','div_'));
+            tag_div.remove();
+        }
+        function get_domain() {
+            return /\/\/(.+?)(:[0-9]+?)?\//g.exec(document.location.href)[1];
+        }
+        const params = (new URL(document.location)).searchParams;
+        const camnums = params.get('camnums').split(',');
+        for (const idx in camnums) {
+            create_tag(idx, camnums[idx]);
+        }
+        
+        
+    </script>
+    
+</body>
+</html>
