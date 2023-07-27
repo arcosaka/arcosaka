@@ -16,6 +16,7 @@ from dc_motor import DCMotor
 from hcsr04 import HCSR04Class
 from i2c_PCF8574 import I2CPCF8574
 from i2c_BMX055 import I2CBMX055
+from mileage import Mileage
 
 #import GPIOPIN
 from GPIO import GPIOPIN
@@ -51,15 +52,19 @@ class FootDebug(object):
         self.motor_r =  DCMotor(GPIOPIN.DC_MOTOR_B1.value,GPIOPIN.DC_MOTOR_B2.value)
         # Sonor用のインスタンス作成
         self.sonor = []
-        port = (GPIOPIN.SONAR_TRIG1.value,GPIOPIN.SONAR_PULS.value)
+        port = (GPIOPIN.SONAR_TRIG1.value,GPIOPIN.SONAR_PULS1.value)
         self.sonor.append(HCSR04Class(False,port))
-        '''
-        port = (GPIOPIN.SONAR_TRIG2.value,GPIOPIN.SONAR_PULS.value)
+        
+        port = (GPIOPIN.SONAR_TRIG2.value,GPIOPIN.SONAR_PULS2.value)
         self.sonor.append(HCSR04Class(False,port))
-        '''
-        #self.sonor[0].start()
-        #self.sonor[1].start()
-        '''
+        
+        self.sonor[0].start()
+        self.sonor[1].start()
+
+        # ロータリーエンコーダ用のインスタンス作成
+        self.mileage = Mileage()
+
+        ''' 
         # line tracer用のインスタンス作成
         self.line = I2CPCF8574()
 
@@ -80,6 +85,8 @@ class FootDebug(object):
     def main(self):
         for i in range(1):
             self.msg_foot.sonor[i] = self.sonor[i].read()
+        self.mileage_val = self.mileage.read_mileage()
+        self.msg_foot.mileage = self.mileage_val
         #for i in range(8):
         '''
         self.msg_foot.line = self.line.read()
@@ -89,7 +96,8 @@ class FootDebug(object):
         '''
         # メッセージを発行する
         #print("sonor1 = " + str(self.msg_foot.sonor[0]))
-        # print("sonor2 = " + str(self.msg_foot.sonor_2))
+        #print("sonor2 = " + str(self.msg_foot.sonor[1]))
+        #print("mileage = " + str(self.mileage_val))
         self.pub.publish(self.msg_foot)
 
 

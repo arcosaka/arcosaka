@@ -59,6 +59,7 @@ find_package(catkin REQUIRED COMPONENTS
     emg.msg
     emgstp.msg
     foot.msg
+    footdebug.msg
     main.msg
     maind.msg
     maindebug.msg

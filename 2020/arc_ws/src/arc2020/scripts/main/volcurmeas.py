@@ -49,15 +49,15 @@ class VOLCURMEAS_DEV(object):
 
         #電流電圧測定ICの初期設定やら
         self.is_enable = False
-        print('init_g')
+        #print('init_g')
         try:
 
-            print('try')
+            #print('try')
 #10.10.8 wata
 #多分ここはいらないはず。
 #            self.smc = mortor.ServoMortorClass(False)
             self.i2c = smbus.SMBus(1)
-            print('SMBus')
+            #print('SMBus')
             # ICの設定
 #10.10.8 wata
 #この設定はデフォルト設定で問題なし。
@@ -72,7 +72,7 @@ class VOLCURMEAS_DEV(object):
             setdata = 0x0800
             setdata = ((setdata << 8) & 0xFF00) + (setdata >> 8)
             self.i2c.write_word_data(I2C_INA226, ADDR_R, setdata)
-            print('init')
+            #print('init')
             self.is_enable = True
 
 # 1回目は変な値をとるときが多いので...
@@ -91,7 +91,7 @@ class VOLCURMEAS_DEV(object):
             self.i_ave = 0
             self.i_sgm = 0
 
-            print('test')
+            #print('test')
     # end __init__
 
     def read_v(self):
@@ -202,8 +202,8 @@ class VOLCURMEAS_DEV(object):
         self.msg_volcurmeas.cur = self.i_now
         self.pub_volcurmeas.publish(self.msg_volcurmeas)
 
-        print(self.v_now)
-        print(self.i_now)
+        #print(self.v_now)
+        #print(self.i_now)
 def volcurmeas_py():
     # 初期化宣言 : このソフトウェアは"led_py_node"という名前
     rospy.init_node('volcurmeas_py_node', anonymous=True)

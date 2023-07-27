@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="jp">
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+    <!--<link rel="stylesheet" type="text/css" href="debug.css"> -->
+    <title>Multi Sniper Login</title>
+    <script src="eventemitter2.min.js"></script>
+    <script src="roslib.min.js"></script>
+    <meta name='viewport' content='width=device-width,initial-scale=1.0'>
+   </head>
+   		<body>
+   		    <!-- タイトル -->
+		    <p><center><font size="5">Multi Sniper</font></p>
+		    <!-- 入力画面指定 -->
+		    <p><form action="" method="post"></form></p>
+			<!-- ユーザー名入力 -->
+			<p><br><input type="text" id="username" placeholder="Username"></p>			
+            <!-- パスワード入力 -->
+            <p><br><input type="text" id="password" placeholder="Password"></p>
+            <!-- ログインボタン設定 -->
+            <!-- location.href="ここにメイン選択のパスを設定" -->
+            <p><input type="button" onclick=loginmsglatch() value="Login"></p>
+                <script>
+		window.onload = loginmsglatch;
+                function loginmsglatch(){
+                //テキストボックスの値を取得
+                    var value_username = document.getElementById("username").value;
+                    var value_password = document.getElementById("password").value;
+                    Talker.send(value_username,value_password);
+                }
+                function callback(message){
+                    if(message.webapp_loginpermit == true){
+                        window.location.href ='setting.html';
+                    }
+                }
+                </script>
+                <script src="ros_communication.js"></script>       
+                <p class="area_username"><!-- 入力されたユーザー名を確認 --></p>
+                <p class="area_password"><!-- 入力されたパスワードを確認 --></p>                
+                
+		    </center></p>
+  		</body>
+</html>

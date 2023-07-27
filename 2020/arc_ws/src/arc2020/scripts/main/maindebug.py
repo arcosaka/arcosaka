@@ -52,7 +52,7 @@ class MainDebug(object):
         self.msg_armdebugclient = armdebugclient()
         
         # maindebug⇒foot
-        self.pub_foot = rospy.Publisher('foot_debug', foot, queue_size=100)
+        self.pub_foot = rospy.Publisher('main', foot, queue_size=100)
         self.msg_foot = foot()
         
         # maindebug⇒webapp

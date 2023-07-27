@@ -38,8 +38,8 @@ MOVE_IDLE = 2
 MOVE_INPROGRESS_PAUSE = 3
 
 # MOTOR_VALUE
-MOTOR_AHEAD = 10
-MOTOR_STOP = 20
+MOTOR_AHEAD = -10
+MOTOR_STOP = 0
 
 class FootMain(object):
     """
@@ -52,10 +52,11 @@ class FootMain(object):
         コンストラクタ
         """
         # 送信作成
-        self.pub = rospy.Publisher('foot_sensor', foot, queue_size=100)
+        self.pub = rospy.Publisher('foot', foot, queue_size=100)
         # messageのインスタンスを作る
         self.msg_foot = foot()
         self.msg_foot.movestatus = MOVE_COMPLETE
+        self.msg_foot.mileage_val = 0
         self.msg_main = main()
         # センサ値格納用のメンバ変数定義
         self.sonor_val = []
@@ -104,8 +105,8 @@ class FootMain(object):
         self.move_status = MOVE_IDLE
         self.x_index = -1
         # Subscriber登録
-        rospy.Subscriber('foot_debug', foot, self.callback, queue_size=1)
-        rospy.Subscriber('from_main', main, self.callback, queue_size=1)
+        #rospy.Subscriber('foot_debug', foot, self.callback, queue_size=1)
+        rospy.Subscriber('main', main, self.callback, queue_size=1)
 #--------------------      
         # 送信メッセージ初期化
         #self.clearMsg()
@@ -120,14 +121,15 @@ class FootMain(object):
 
 #--------------------
     def read_sensors(self):
-        for i in range(2):
-            self.sonor_val[i] = self.sonor[i].read()
+        #for i in range(2):
+        #    self.sonor_val[i] = self.sonor[i].read()
         #for i in range(8):
-        self.line_val = self.line.read()
-        self.accel_val = self._9dsensor.read_accel()
-        self.gyro_val = self._9dsensor.read_gyro()
-        self.mag_val = self._9dsensor.read_mag()
+        #self.line_val = self.line.read()
+        #self.accel_val = self._9dsensor.read_accel()
+        #self.gyro_val = self._9dsensor.read_gyro()
+        #self.mag_val = self._9dsensor.read_mag()
         self.mileage_val = self.mileage.read_mileage()
+        self.msg_foot.mileage_val = self.mileage_val
 
 #--------------------
     def change_move_status(self):
@@ -194,10 +196,10 @@ class FootMain(object):
         # センサ読み取り
         self.read_sensors()
         # bias計算
-        bias_line = self.pid.get_bias_line_trace(self.line_val)
-        bias_range = self.pid.get_bias_side_range(self.sonor_val[0],self.sonor_val[1])
-        print( "bias line:" + str(bias_line) + " range:" + str(bias_range))
-        bias = bias_line + bias_range
+        #bias_line = self.pid.get_bias_line_trace(self.line_val)
+        #bias_range = self.pid.get_bias_side_range(self.sonor_val[0],self.sonor_val[1])
+        #print( "bias line:" + str(bias_line) + " range:" + str(bias_range))
+        #bias = bias_line + bias_range
         # DCモータへ値設定
         motor_r_val = MOTOR_STOP
         motor_l_val = MOTOR_STOP
@@ -214,7 +216,7 @@ class FootMain(object):
         # 状態返却
         self.return_move_status()
         # 動作管理
-        self.move()
+        self.move(0)
 
 
 def foot_main_py():

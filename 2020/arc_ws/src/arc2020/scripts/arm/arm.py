@@ -13,13 +13,34 @@ import time
 import mortor
 
 # 自分で定義したmessageファイルから生成されたモジュール
-from arc2020.msg import brain
+#受信
+from arc2020.msg import main
+
+#送信
 from arc2020.msg import arm
 
 # 定数などの定義ファイルimport
 from arm_consts import *
 
 CYCLES = 60 
+
+# OPERATION
+OPE_START = 1
+OPE_PAUSE = 2
+OPE_STOP  = 0
+
+# MOVE_STATUS
+MOVE_INPROGRESS = 0
+MOVE_COMPLETE = 1
+MOVE_IDLE = 2
+MOVE_INPROGRESS_PAUSE = 3
+
+LIMIT_WIDTH_SYSTEM_ORDER = 273
+LIMIT_WIDTH_CM    = 45
+UNE_WIDTH_CM      = 30
+SYSTEMORDER_PER_CM = LIMIT_WIDTH_SYSTEM_ORDER/LIMIT_WIDTH_CM
+
+ARM_OFFSET = (LIMIT_WIDTH_SYSTEM_ORDER - (UNE_WIDTH_CM*SYSTEMORDER_PER_CM))/2
 
 class Arm(object):
     """
@@ -31,92 +52,112 @@ class Arm(object):
         """
         コンストラクタ
         """
-        self.cyclecount = 0
         # 受信作成
-        self.sub_brain  = rospy.Subscriber('client2', brain, self.clientCallback, queue_size=1)
+        self.sub_main  = rospy.Subscriber('main', main, self.mainCallback, queue_size=1)
+        
         # 送信作成
         self.pub_arm = rospy.Publisher('arm', arm, queue_size=100)
+        
         # messageのインスタンスを作る
         self.msg_arm = arm()
+        
         # 送信メッセージ初期化
         self.clearMsg()
         
-        # メッセージ受信用変数
-        #self.drill_req = 0  # 受信値B
-        
-        # MortorClass
-        self.stmc = mortor.StepMortorClass(DEBUG_ARM, (PORT_HANDV_A, PORT_HANDV_B), (LIM_HANDV_MIN, LIM_HANDV_MAX))
+        # MortorClass        
         self.svmc = mortor.ServoMortorClass(DEBUG_ARM)
+        self.svmc.move_servo(CHANNEL_HAND, 80)
+        
+        self.stmc = mortor.StepMortorClass(DEBUG_ARM, (PORT_HANDV_A, PORT_HANDV_B), (LIM_HANDV_MIN, LIM_HANDV_MAX))
+        time.sleep(1)
+        self.stmc.move_posinit_step()
+        
+
+        self.move_status = MOVE_IDLE
+        self.operation = OPE_PAUSE
+        self.y_index = -1
+        
+        
 #--------------------
-
-
 # 送信メッセージの初期化
     def clearMsg(self):
         """
         publishするメッセージのクリア
         """
-        #for all
-        self.msg_arm.armdrillstatus = 0
-        self.msg_arm.armretorgstatus = 0
-#--------------------
-
-
-# アーム原点復帰
-    def posinit(self):
-        """
-        位置初期化
-        """
-        self.svmc.move_servo(CHANNEL_HAND, RELEASE_HAND)
-        self.stmc.move_posinit_step()
-#--------------------
-
-
-# アーム動作
-    def move_arm(self):
-        """
-        y軸移動⇒z軸下降⇒z軸上昇
-        """
+        self.msg_arm.drillstatus = 1
+        self.msg_arm.retorgstatus = 0
         
-        # y軸移動
-        handy = brain_msg.drill_width_value
-        self.stmc.move_step(handy)  # y軸移動
-        
-        # z軸移動
-        self.svmc.move_servo(CHANNEL_HAND, RELEASE_HAND) # z軸上昇
-        time.sleep(2)
-        self.svmc.move_servo(CHANNEL_HAND, CATCH_HAND) # z軸降下
-        time.sleep(2)
-        self.svmc.move_servo(CHANNEL_HAND, RELEASE_HAND) # z軸上昇
-        time.sleep(2)
 #--------------------
-
-
 # 受信コールバック
-    def clientCallback(self, brain_msg):
+    def mainCallback(self, main_msg):
         """
         クライアントの受信コールバック
         """
-        if brain_msg.retorg_req == 1 : # アーム原点復帰要求有無
-            if self.msg_arm.armretorgstatus == 0 : # 原点復帰実施状態判定
-                self.msg_arm.armdrillstatus = 1 # アーム動作中
-                self.posinit()
-                self.msg_arm.armdrillstatus = 0 # アーム停止中
-                self.msg_arm.armretorgstatus = 1 # 原点復帰実施済み
+        # メッセージ受信
+        self.ridge_width = main_msg.arm_ridge_width
+        self.drill_width = main_msg.arm_drill_width
         
-        if brain_msg.drill_req == 1 and self.msg_arm.armretorgstatus == 1 : # アーム動作指示要求有無
-            self.msg_arm.armdrillstatus = 1 # アーム動作中
-            self.move_arm() # アーム動作
-            self.msg_arm.armdrillstatus = 0 # アーム停止中
+        self.operation = main_msg.arm_drill_req
+
+
 #--------------------
+# ステッピングモータ動作関数
+    def movestep(self):
+        handy = ARM_OFFSET + (self.drill_width[self.y_index] * SYSTEMORDER_PER_CM)
+        if handy < 0 :
+            handy = 0
+        elif handy > LIMIT_WIDTH_SYSTEM_ORDER :
+            handy = LIMIT_WIDTH_SYSTEM_ORDER
+        
+        self.stmc.move_step(handy)  # y軸移動
+        time.sleep(2)
 
 
+#--------------------
+# サーボモータ動作関数
+    def moveservo(self):
+        self.svmc.move_servo(CHANNEL_HAND, 45)  # z軸移動
+        time.sleep(0.5)
+        self.svmc.move_servo(CHANNEL_HAND, 80)  # z軸移動
+        time.sleep(2)
+
+
+#--------------------
 # メイン関数
     def main(self):
+        #print("arm:"+str(self.move_status)+","+str(self.stepstatus)+","+str(self.msg_arm.drill_req_step)+","+str(self.servostatus))
+        if self.move_status == MOVE_IDLE:
+            # -> INPROGRESS
+            if self.operation == OPE_START:
+                self.move_status = MOVE_INPROGRESS
+                self.y_index = self.y_index + 1
+                self.msg_arm.drillstatus = 0
+        
+        # INPROGRESS
+        elif self.move_status == MOVE_INPROGRESS:
+            # -> COMPLETE
+            #self.msg_arm.drillstatus = 0
+            self.movestep()
+            self.moveservo()
+            self.move_status = MOVE_COMPLETE
+        
+        # INPROGRESS_PAUSE
+        elif self.move_status == MOVE_INPROGRESS_PAUSE:
+            # -> INPROGRESS
+            if self.operation == OPE_START:
+                self.move_status = MOVE_INPROGRESS
+        
+        # COMPLETE
+        elif self.move_status == MOVE_COMPLETE:
+            # -> IDLE
+            self.msg_arm.drillstatus = 1
+            if self.operation == OPE_PAUSE:
+                self.move_status = MOVE_IDLE
+        
         # メッセージを発行する
         self.pub_arm.publish(self.msg_arm)
+        
 #--------------------
-
-
 def arm_py():
     # 初期化宣言 : このソフトウェアは"arm_py_node"という名前
     rospy.init_node('arm_py_node', anonymous=True)

@@ -15,7 +15,7 @@ import pigpio
 from PIGPIO_SWITCH import __pigpio__
 
 LIMIT_LOOP_COUNT = 500
-SONIC_COFFICIENT = 36*1000/2#cm
+SONIC_COFFICIENT = 1.0*36*1000/2#cm
 D_LIST_MAX = 6
 ROLLING_WINDOW_SIZE = 5
 D_LIST_THRESHO = 5
@@ -61,7 +61,7 @@ class HCSR04Class(object):
             #print(s)
             distance2 = s.rolling(ROLLING_WINDOW_SIZE).mean()
             len2 = len(distance2) - 1
-            print ("distance2["+str(len2+1)+"]" + str(distance2[len2]))
+            #print ("distance2["+str(len2+1)+"]" + str(distance2[len2]))
             self.distance = distance2[len2-1]
     
     def read(self):

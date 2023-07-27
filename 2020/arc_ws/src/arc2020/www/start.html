@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="jp">
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+    <!--<link rel="stylesheet" type="text/css" href="debug.css"> -->
+    <title>Multi Sniper Start</title>
+    <meta name='viewport' content='width=device-width,initial-scale=1.0'>
+   </head>
+   		<body>
+		    <p><center><font size="5">Multi Sniper</font>
+		    <p><text id="power_text">0.3</text>%<meter value="0.3" id="power">%</meter></p>
+		    <p>走行距離</p>
+    		<div style="text-align: center;float:center;">
+            <!-- disabled valueに出力する.msgのIFを指定する -->
+            <p><text id="mileage">--</text>cm<br>
+			
+			<p>進捗状況</p>
+		    <p><font color="red">●</font>main:<text id="main">--</text><br><font color="green">●</font>sub:<text id="sub">--</text></p>
+			<div>
+			<canvas id="canvas" width="400" height="200"></canvas>
+			<style>
+				canvas {
+					border: 1px solid silver;
+				}
+			</style>
+			</div>
+			<p>動作状態</p>
+			<img src="img/operating_conditions_normal_hoge.jpg" alt="動作状態" height="43" width="246" /><br>
+			<div id="control">
+				<a href="pause.html">
+				<img src="img/pause.jpg" alt="pause" height="43" width="120"></a>
+				<a href="result.html">
+				<img src="img/Interruption.jpg" alt="Interruption" height="43" width="120"></a><br>
+			</div>
+			<script src="eventemitter2.min.js"></script>
+			<script src="roslib.min.js"></script>
+			<script src="ros_communication.js"></script>
+			<script>
+				window.onload = loadFinished;
+				var isDrawComplete = false;
+				function loadFinished(){
+					var querys = getUrlQueries();
+					var main = decodeURI(querys["main"])
+					var sub = decodeURI(querys["sub"])
+					document.getElementById("main").innerHTML = main;
+					document.getElementById("sub").innerHTML = sub;
+					Talker.send("","",0,"","",0,0,0,false,true);
+				}
+				function callback(message){
+					document.getElementById("power").value = message.webapp_batterycharge/100;
+					document.getElementById("power_text").innerHTML = message.webapp_batterycharge;
+					document.getElementById("mileage").innerHTML = message.webapp_mileage;
+					drawBluePrint(message.webapp_seed_type,message.webapp_coordinates_x,message.webapp_coordinates_y,message.webapp_completion);
+					isComplete(message.webapp_seed_type.length,message.webapp_completion);
+				}
+
+				function getUrlQueries() {
+					var queryStr = window.location.search.slice(1);  // 文頭?を除外
+						queries = {};
+					// クエリがない場合は空のオブジェクトを返す
+					if (!queryStr) {
+						return queries;
+					}
+					// クエリ文字列を & で分割して処理
+					queryStr.split('&').forEach(function(queryStr) {
+						// = で分割してkey,valueをオブジェクトに格納
+						var queryArr = queryStr.split('=');
+						queries[queryArr[0]] = queryArr[1];
+					});
+					return queries;
+				}
+
+				function drawBluePrint(type,x,y,comp) {
+					var canvas = document.getElementById('canvas');
+					var c = canvas.getContext('2d');
+					var color = ['red','green'];
+					var rlength = 5;
+					var ybairitu = 1;
+					var xbairitu = 6;
+					c.clearRect(0,0,400,200);
+					for(var i = 0; i < type.length; i++){
+						// パスの開始
+						c.fillStyle = color[type[i]];  // 塗りつぶしの色
+						c.strokeStyle = color[type[i]];  // 塗りつぶしの色
+						c.beginPath();
+						c.arc(y[i] , x[i]*xbairitu, rlength, 0, 2 * Math.PI, false);
+						// 描画
+						if(i<comp){
+							c.stroke();
+						}
+						else{
+							c.fill();
+						}
+					}
+				}
+
+				function isComplete(num,comp){
+					if((num<=comp) && (isDrawComplete == false)){
+						var querys = getUrlQueries();
+						document.getElementById("control").innerHTML ='<img src="img/complete.jpg" alt="comp" height="43" width="246" onclick="toComplete()"/>';
+						isDrawComplete = true;
+					}
+				}
+
+				function toComplete(){
+					var querys = getUrlQueries();
+					window.location.href ='result.html?main=' + querys["main"] + "&sub=" + querys["sub"] + "&l=" + querys["l"]+ "&w=" + querys["w"] + "&h=" + querys["h"];
+				}
+			</script>			
+		    </center></p>
+  		</body>
+</html>
