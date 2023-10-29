@@ -5,202 +5,50 @@
     <style>
         .flex{
             display: flex;
+            flex-wrap: wrap;
+        }
+        .cell{
+            width: 49%;
+        }
+        image{
+            width: 640px;
+            height: 480px;
         }
     </style>
 </head>
 <body>
+    <h1>mjpg-osaka</h1>
+    <div id="div_flex" class="flex">
+ 
+    </div>
     <script>
-        function hidden_tag(e){
+        function create_tag(num_idx,str_name){
+            const num_port =  parseInt(num_idx, 10) + 49200;
+            const str_domain = get_domain();
+            const str_url = `http://${str_domain}:49200/?action=stream_${num_idx}`;
+            const tag_div_flex = document.getElementById('div_flex');
+            const ele_div = document.createElement("div");
+            ele_div.id = `div_${str_name}`;
+            ele_div.className = "cell";
+            ele_div.innerHTML = `<h2>video${str_name}</h2><a href="${str_url}"><img id="img_${str_name}" src="${str_url}" width="640px" height="480px" /></a>`;
+            tag_div_flex.appendChild(ele_div);
+        }
+        function delete_tag(e){
             const tag_img = e.target;
             const tag_div = document.getElementById(tag_img.id.replace('img_','div_'));
             tag_div.remove();
         }
+        function get_domain() {
+            return /\/\/(.+?)(:[0-9]+?)?\//g.exec(document.location.href)[1];
+        }
+        const params = (new URL(document.location)).searchParams;
+        const camnums = params.get('camnums').split(',');
+        for (const idx in camnums) {
+            create_tag(idx, camnums[idx]);
+        }
+        
+        
     </script>
-    <h1>mjpg-osaka</h1>
-    <div class="flex">
-        
-        <div id="div_24">
-            <h2>video24</h2>
-            <a href="http://osakarp.local:49224/?action=stream">
-                <img id="img_24" src="http://osakarp.local:49224/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_17">
-            <h2>video17</h2>
-            <a href="http://osakarp.local:49217/?action=stream">
-                <img id="img_17" src="http://osakarp.local:49217/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_9">
-            <h2>video9</h2>
-            <a href="http://osakarp.local:49209/?action=stream">
-                <img id="img_9" src="http://osakarp.local:49209/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_8">
-            <h2>video8</h2>
-            <a href="http://osakarp.local:49208/?action=stream">
-                <img id="img_8" src="http://osakarp.local:49208/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_7">
-            <h2>video7</h2>
-            <a href="http://osakarp.local:49207/?action=stream">
-                <img id="img_7" src="http://osakarp.local:49207/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_6">
-            <h2>video6</h2>
-            <a href="http://osakarp.local:49206/?action=stream">
-                <img id="img_6" src="http://osakarp.local:49206/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_5">
-            <h2>video5</h2>
-            <a href="http://osakarp.local:49205/?action=stream">
-                <img id="img_5" src="http://osakarp.local:49205/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_4">
-            <h2>video4</h2>
-            <a href="http://osakarp.local:49204/?action=stream">
-                <img id="img_4" src="http://osakarp.local:49204/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_19">
-            <h2>video19</h2>
-            <a href="http://osakarp.local:49219/?action=stream">
-                <img id="img_19" src="http://osakarp.local:49219/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_3">
-            <h2>video3</h2>
-            <a href="http://osakarp.local:49203/?action=stream">
-                <img id="img_3" src="http://osakarp.local:49203/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_2">
-            <h2>video2</h2>
-            <a href="http://osakarp.local:49202/?action=stream">
-                <img id="img_2" src="http://osakarp.local:49202/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_31">
-            <h2>video31</h2>
-            <a href="http://osakarp.local:49231/?action=stream">
-                <img id="img_31" src="http://osakarp.local:49231/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_18">
-            <h2>video18</h2>
-            <a href="http://osakarp.local:49218/?action=stream">
-                <img id="img_18" src="http://osakarp.local:49218/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_12">
-            <h2>video12</h2>
-            <a href="http://osakarp.local:49212/?action=stream">
-                <img id="img_12" src="http://osakarp.local:49212/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_11">
-            <h2>video11</h2>
-            <a href="http://osakarp.local:49211/?action=stream">
-                <img id="img_11" src="http://osakarp.local:49211/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_10">
-            <h2>video10</h2>
-            <a href="http://osakarp.local:49210/?action=stream">
-                <img id="img_10" src="http://osakarp.local:49210/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_23">
-            <h2>video23</h2>
-            <a href="http://osakarp.local:49223/?action=stream">
-                <img id="img_23" src="http://osakarp.local:49223/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_22">
-            <h2>video22</h2>
-            <a href="http://osakarp.local:49222/?action=stream">
-                <img id="img_22" src="http://osakarp.local:49222/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_21">
-            <h2>video21</h2>
-            <a href="http://osakarp.local:49221/?action=stream">
-                <img id="img_21" src="http://osakarp.local:49221/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_20">
-            <h2>video20</h2>
-            <a href="http://osakarp.local:49220/?action=stream">
-                <img id="img_20" src="http://osakarp.local:49220/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_1">
-            <h2>video1</h2>
-            <a href="http://osakarp.local:49201/?action=stream">
-                <img id="img_1" src="http://osakarp.local:49201/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_0">
-            <h2>video0</h2>
-            <a href="http://osakarp.local:49200/?action=stream">
-                <img id="img_0" src="http://osakarp.local:49200/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_16">
-            <h2>video16</h2>
-            <a href="http://osakarp.local:49216/?action=stream">
-                <img id="img_16" src="http://osakarp.local:49216/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_15">
-            <h2>video15</h2>
-            <a href="http://osakarp.local:49215/?action=stream">
-                <img id="img_15" src="http://osakarp.local:49215/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_14">
-            <h2>video14</h2>
-            <a href="http://osakarp.local:49214/?action=stream">
-                <img id="img_14" src="http://osakarp.local:49214/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-        <div id="div_13">
-            <h2>video13</h2>
-            <a href="http://osakarp.local:49213/?action=stream">
-                <img id="img_13" src="http://osakarp.local:49213/?action=stream" style="width:640px;height:480px;" width="640px" height="480px" onerror="hidden_tag(event)"/>
-            </a>
-        </div>
-        
-    </div>
+    
 </body>
 </html>
