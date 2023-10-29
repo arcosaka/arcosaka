@@ -41,4 +41,6 @@ echo "http://${HOSTNAME}.local:49199/preview.html?camnums=${cameras}"
 
 #python ~/create_html.py
 
-python -m http.server 49199 --directory .//www/ &>> /var/log/stream/pyhttp.log &
+python -m http.server 49199 --directory ./www/ &>> /var/log/stream/pyhttp.log &
+
+python ../python/ina226.py &>> /var/log/stream/ina226.log &
